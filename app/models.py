@@ -1,6 +1,4 @@
-from flask_sqlalchemy import SQLalchemy
-
-db = SQLalchemy()
+from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -9,8 +7,8 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     phonenumber = db.Column(db.Integer, nullable=True)
 
-    addresses = db.relationship('User_address', backref='user', lazy='True')
-    order = db.relationship('Order', backref='user', lazy='True')
+    addresses = db.relationship('User_address', backref='user', lazy=True)
+    order = db.relationship('Order', backref='user', lazy=True)
 
 
 class User_address(db.Model):
@@ -21,7 +19,7 @@ class User_address(db.Model):
     county = db.Column(db.String(60), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    order = db.relationship('Order', backref='userAddress', lazy=True)
+    order = db.relationship('Order', backref='user_address', lazy=True)
 ######################### Restaurant ###########################
 
 class Restaurant(db.Model):
@@ -30,16 +28,24 @@ class Restaurant(db.Model):
     location = db.Column(db.String(100), nullable=False)
     contact = db.Column(db.String(100), nullable=False)
 
-    menus = db.relationship('Menu', backref='restaurant', lazy='True')
+    menus = db.relationship('Menu', backref='restaurant', lazy=True)
+
+    def as_dict(self):
+        return {
+            'id':self.id,
+            'name':self.name,
+            'location':self.location,
+            'contact':self.contact
+        }
 
 class Menu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     category = db.Column(db.String(100), nullable=False)
     status = db.Column(db.Boolean, default=True)
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id', nullable=False))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable=False)
 
-    menu_items = db.relationship('Menu_item', backref='menu', lazy='True')
+    menu_items = db.relationship('Menu_item', backref='menu', lazy=True)
 
 class Menu_item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +54,7 @@ class Menu_item(db.Model):
     description = db.Column(db.Text, nullable=False)
     menu_id = db.Column(db.Integer, db.ForeignKey('menu.id'), nullable=False)
 
-    orderitem = db.relationship('OrderItem', backref='menu_item', lazy='True')
+    orderitem = db.relationship('OrderItem', backref='menu_item', lazy=True)
 
 
 ######################### Order ###########################
@@ -56,7 +62,7 @@ class Menu_item(db.Model):
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    delivery_address_id = db.Column(db.Integer, db.ForeignKey('userAddress.id'), nullable=False)
+    delivery_address_id = db.Column(db.Integer, db.ForeignKey('user_address.id'), nullable=False)
     total = db.Column(db.Float, nullable=False)
 
     orderitems = db.relationship('OrderItem', backref='order', lazy=True)
