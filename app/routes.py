@@ -5,8 +5,7 @@ from .models import Restaurant
 
 @app.route('/', methods=['GET'])
 def index():
-    data = jsonify({"message":"This is Watamu API Application..."})
-    return data
+    return jsonify({"message":"This is Watamu API Application..."}), 200
 
 @app.route('/restaurants', methods=['GET'])
 def get_restaurants():
