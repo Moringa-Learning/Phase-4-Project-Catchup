@@ -11,7 +11,6 @@ jwt = JWTManager(app)
 
 
 class UserRegistrationResource(Resource):
-    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
@@ -45,7 +44,6 @@ class UserRegistrationResource(Resource):
         }, 201
     
 class UserLoginResource(Resource):
-    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
