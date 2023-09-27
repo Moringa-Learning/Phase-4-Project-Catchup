@@ -12,6 +12,7 @@ flask-migrate = "==2.7.0"
 flask-jwt-extended = "*"
 flask-cors = "*"
 gunicorn = "*"
+flask-restful = "*"
 
 [dev-packages]
 
