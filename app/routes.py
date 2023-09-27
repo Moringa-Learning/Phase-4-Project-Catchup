@@ -11,6 +11,7 @@ jwt = JWTManager(app)
 
 
 class UserRegistrationResource(Resource):
+    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
@@ -44,6 +45,7 @@ class UserRegistrationResource(Resource):
         }, 201
     
 class UserLoginResource(Resource):
+    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
@@ -59,10 +61,12 @@ class UserLoginResource(Resource):
             return {'message': 'Invalid credentials'}, 401
 
 class UserResource(Resource):
+    @jwt_required()
     def get(self, user_id):
         user = User.query.get_or_404(user_id)
         return user.as_dict()
 
+    @jwt_required()
     def put(self, user_id):
         user = User.query.get_or_404(user_id)
         parser = reqparse.RequestParser()
@@ -78,6 +82,7 @@ class UserResource(Resource):
         db.session.commit()
         return {'message': 'User updated successfully'}
 
+    @jwt_required()
     def delete(self, user_id):
         user = User.query.get_or_404(user_id)
         db.session.delete(user)
